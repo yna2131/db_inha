@@ -1,29 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './post.entity';
+import { Posts } from './post.entity';
 
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    @InjectRepository(Posts)
+    private readonly postRepository: Repository<Posts>,
   ) {}
 
-  async getAllPosts(): Promise<Post[]> {
+  async getAllPosts(): Promise<Posts[]> {
     return this.postRepository.find();
   }
 
-  async getPost(post_id: number): Promise<Post> {
+  async getPost(post_id: number): Promise<Posts> {
     return this.postRepository.findOneBy({ post_id });
   }
 
-  async createPost(postDto: Partial<Post>): Promise<Post> {
+  async createPost(postDto: Partial<Posts>): Promise<Posts> {
     const newPost = this.postRepository.create(postDto);
     return this.postRepository.save(newPost);
   }
 
-  async updatePost(post_id: number, postDto: Partial<Post>): Promise<Post> {
+  async updatePost(post_id: number, postDto: Partial<Posts>): Promise<Posts> {
     await this.postRepository.update(post_id, postDto);
     return this.getPost(post_id);
   }
