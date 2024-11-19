@@ -5,10 +5,10 @@ export class Post {
   @PrimaryGeneratedColumn()
   post_id: number;
 
-  @Column()
+  @Column({ length: 30 })
   title: string;
 
-  @Column()
+  @Column({ length: 2000 })
   content: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
