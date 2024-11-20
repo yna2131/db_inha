@@ -8,7 +8,7 @@ export class Posts {
   @Column({ length: 30 })
   title: string;
 
-  @Column({ length: 2000 })
+  @Column({ length: 2000, default: 'No content written' })
   content: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
