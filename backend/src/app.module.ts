@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from './post/post.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -9,12 +10,13 @@ import { PostModule } from './post/post.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'root',
       database: 'blog',
       autoLoadEntities: true,
       synchronize: true,
     }),
     PostModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
