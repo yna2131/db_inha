@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import main from './assets/Main.svg';
-import RegisterPage from './RegisterPage';
-import MainPage from './MainPage';
+import RegisterPage from './pages/RegisterPage';
+import MainPage from './pages/MainPage';
 
 function App() {
   const [email, setEmail] = useState('');
