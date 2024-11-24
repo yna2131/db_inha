@@ -54,7 +54,6 @@ export function RegisterPage() {
 
       const result = await response.json();
       if (result.success) {
-        // Ensuite, enregistrer le mot de passe
         const passwordResponse = await fetch('/users/set-password', {
           method: 'POST',
           headers: {
