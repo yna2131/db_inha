@@ -28,4 +28,14 @@ export class UsersService {
         await this.userRepository.save(user);
         return user;
     }
+
+    async setPassword(email: string, password: string) {
+        const user = await this.userRepository.findOneBy({ email });
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.password = password;
+        await this.userRepository.save(user);
+        return user;
+    }
 }

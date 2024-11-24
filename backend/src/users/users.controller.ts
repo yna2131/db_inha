@@ -6,6 +6,23 @@ import { User } from './users.entity';
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
+
+    @Post('/login')
+    async login(@Body() body: { email: string; password: string }) {
+        const { email, password } = body;
+
+        const user = await this.usersService.findByEmail(email);
+        if (!user) {
+            return { success: false, message: 'User not found.' };
+        }
+
+        if (user.password === password) {
+            return { success: true, message: 'Login successful.' };
+        } else {
+            return { success: false, message: 'Invalid password.' };
+        }
+    }
+
     @Post()
     async createOrGetUser(@Body() body: { email: string }) {
         const { email } = body;
@@ -45,5 +62,11 @@ export class UsersController {
     async setPseudo(@Body() body: { email: string; pseudo: string }) {
         const user = await this.usersService.setPseudo(body.email, body.pseudo);
         return { success: true, user };
-  }
+    }
+
+    @Post('/set-password')
+    async setPassword(@Body() body: { email: string; password: string }) {
+        const user = await this.usersService.setPassword(body.email, body.password);
+        return { success: true, user };
+    }
 }

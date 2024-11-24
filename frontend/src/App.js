@@ -1,41 +1,18 @@
-import { useState } from 'react';
+
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import main from './assets/Main.svg';
 import RegisterPage from './pages/RegisterPage';
 import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
 
 function App() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    setMessage('Loading...');
-
-    try {
-      const response = await fetch('/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const result = await response.json();
-
-      if (result.exists) {
-        navigate('/login', { state: { email } });
-      } else {
-        navigate('/register', { state: { email } });
-      }
-    } catch (error) {
-      setMessage('Error');
-      console.error(error);
-    }
+    navigate('/register');
   };
-
   return (
     <div className="App">
       <header className="App-header">
@@ -68,19 +45,6 @@ function App() {
               alignItems: 'center',
             }}
           >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your mail..."
-              style={{
-                padding: '10px',
-                margin: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                width: '200px',
-              }}
-            />
             <button
               type="submit"
               style={{
@@ -92,9 +56,8 @@ function App() {
                 cursor: 'pointer',
               }}
             >
-              Submit
+              Welcome
             </button>
-            <div style={{ marginTop: '20px', color: 'white' }}>{message}</div>
           </form>
         </div>
       </header>
@@ -108,6 +71,7 @@ function Main() {
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/main" element={<MainPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>
