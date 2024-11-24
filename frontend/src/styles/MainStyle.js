@@ -63,17 +63,51 @@ export const mainstyle = {
     },
     postBox: {
         width: '100%',
-        aspectRatio: '1',
+        aspectRatio: 'auto',
         backgroundColor: '#e0e0e0',
         border: '1px solid #ccc',
         borderRadius: '10px',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: 'column',
         fontSize: '1rem',
+        padding: '15px',
         boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
         boxSizing: 'border-box',
         flex: 'none',
+        minHeight: '20rem',
+        justifyContent: 'space-between',
+    },
+
+    postTitle: {
+        fontWeight: 'bold',
+        marginBottom: '10px',
+    },
+
+    postContent: {
+        flexGrow: 1,
+        overflowY: 'auto',
+        maxHeight: '1000px',
+        wordWrap: 'break-word',
+        whiteSpace: 'normal',
+        marginBottom: '0',
+    },
+
+    '@media (max-width: 768px)': {
+        postBox: {
+            fontSize: '0.9rem',
+        },
+        postContent: {
+            maxHeight: '250px',
+        },
+    },
+
+    '@media (max-width: 480px)': {
+        postBox: {
+            fontSize: '0.8rem',
+        },
+        postContent: {
+            maxHeight: '200px',
+        },
     },
 
     '@media (max-width: 768px)': {

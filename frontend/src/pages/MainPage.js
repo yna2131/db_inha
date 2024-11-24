@@ -1,13 +1,16 @@
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { mainstyle } from "../styles/MainStyle";
+import { CreatePostModal } from "../components/CreatePostModal";
 
 function MainPage() {
   const location = useLocation();
   const email = location.state?.email;
   const [pseudo, setPseudo] = useState('');
+  const [userId, setUserId] = useState('');
   const [message, setMessage] = useState('');
   const [posts, setPosts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,9 +24,9 @@ function MainPage() {
         });
 
         const result = await response.json();
-
         if (result.user) {
           setPseudo(result.user.pseudo);
+          setUserId(result.user.id)
         } else {
           setMessage('User not found.');
         }
@@ -55,11 +58,7 @@ function MainPage() {
     fetchPosts();
   }, []);
 
-  if (!email) {
-    return <p>Error: Missing email.</p>;
-  }
-
-  const createPost = async () => {
+  const createPost = async (title, content) => {
     try {
       const response = await fetch('/posts', {
         method: 'POST',
@@ -67,8 +66,9 @@ function MainPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          title: `Post by ${pseudo || 'User'}`,
-          content: 'This is a new post.',
+          title: title,
+          content: content,
+          user_id: userId,
         }),
       });
 
@@ -79,6 +79,10 @@ function MainPage() {
       console.error(error);
     }
   };
+
+  if (!email) {
+    return <p>Error: Missing email.</p>;
+  }
 
   return (
     <div style={mainstyle.mainContainer}>
@@ -93,14 +97,17 @@ function MainPage() {
         ))}
       </div>
       <div style={mainstyle.postsContainer}>
-        {posts.map((post, index) => (
+        {posts.map((post) => (
           <div key={post.id} style={mainstyle.postBox}>
-            {post.title}
+            <p style={mainstyle.postContent}>{post.user_id}</p>
+            <h3 style={mainstyle.postTitle}>{post.title}</h3>
+            <p style={mainstyle.postContent}>{post.content}</p>
           </div>
         ))}
       </div>
+
       <button 
-        onClick={createPost}
+        onClick={() => setIsModalOpen(true)}
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -120,6 +127,13 @@ function MainPage() {
       >
         +
       </button>
+
+      {isModalOpen && (
+        <CreatePostModal 
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={createPost}
+        />
+      )}
     </div>
   );
 }
