@@ -17,11 +17,20 @@ export class UsersController {
         }
 
         if (user.password === password) {
-            return { success: true, message: 'Login successful.' };
+            return { success: true, message: 'Login successful.', userId: user.id };
         } else {
             return { success: false, message: 'Invalid password.' };
         }
     }
+
+    @Get(':user_id')
+    async getUserById(@Param('user_id') user_id: number): Promise<User | string> {
+    const user = await this.usersService.findById(user_id);
+    if (!user) {
+        return 'User not found';
+    }
+    return user;
+}
 
     @Post()
     async createOrGetUser(@Body() body: { email: string }) {
@@ -61,12 +70,13 @@ export class UsersController {
     @Post('/set-pseudo')
     async setPseudo(@Body() body: { email: string; pseudo: string }) {
         const user = await this.usersService.setPseudo(body.email, body.pseudo);
-        return { success: true, user };
+        return { success: true, userId: user.id, user };
     }
 
     @Post('/set-password')
     async setPassword(@Body() body: { email: string; password: string }) {
         const user = await this.usersService.setPassword(body.email, body.password);
-        return { success: true, user };
+        return { success: true, userId: user.id, user };
     }
+
 }

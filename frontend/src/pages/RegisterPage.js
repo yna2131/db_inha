@@ -28,21 +28,6 @@ export function RegisterPage() {
       return;
     }
 
-    const response = await fetch('/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    });
-
-    const result = await response.json();
-
-    if (result.exists) {
-      navigate('/login', { state: { email } });
-    } else {
-      navigate('/register', { state: { email } });
-    }
     try {
       const response = await fetch('/users/set-pseudo', {
         method: 'POST',
@@ -65,7 +50,7 @@ export function RegisterPage() {
         const passwordResult = await passwordResponse.json();
         if (passwordResult.success) {
           setMessage('Account created successfully!');
-          navigate('/main', { state: { email } });
+          navigate('/main', { state: { email, userId: result.userId } });
         } else {
           setMessage('Error saving password.');
         }
