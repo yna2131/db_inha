@@ -5,6 +5,7 @@ import main from './assets/Main.svg';
 import RegisterPage from './pages/RegisterPage';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
+import PostDetailPage from './pages/PostDetailPage';
 
 function App() {
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ function Main() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path='/post/:post_id' element={<PostDetailPage />} />
       </Routes>
     </Router>
   );

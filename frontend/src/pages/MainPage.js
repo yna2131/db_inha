@@ -1,10 +1,11 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { mainstyle } from "../styles/MainStyle";
 import { CreatePostModal } from "../components/CreatePostModal";
 
 function MainPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const email = location.state?.email;
   const [pseudo, setPseudo] = useState('');
   const [userId, setUserId] = useState('');
@@ -98,7 +99,7 @@ function MainPage() {
       </div>
       <div style={mainstyle.postsContainer}>
         {posts.map((post) => (
-          <div key={post.id} style={mainstyle.postBox}>
+          <div key={post.id} style={mainstyle.postBox} onClick={() => navigate(`/post/${post.post_id}`)}>
             <p style={mainstyle.postContent}>{post.user_id}</p>
             <h3 style={mainstyle.postTitle}>{post.title}</h3>
             <p style={mainstyle.postContent}>{post.content}</p>
