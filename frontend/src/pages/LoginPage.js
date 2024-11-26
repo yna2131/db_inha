@@ -30,10 +30,9 @@ export function LoginPage() {
             });
 
             const result = await response.json();
-
             if (result.success) {
                 setMessage('Login successful!');
-                navigate('/main', { state: { email } });
+                navigate('/main', { state: { email, userId: result.userId } });
             } else {
                 setMessage(result.message || 'Invalid email or password.');
             }

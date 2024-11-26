@@ -7,9 +7,9 @@ function MainPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
+  const user_id = location.state?.userId;
   const [pseudo, setPseudo] = useState('');
-  const [userId, setUserId] = useState('');
-  const [message, setMessage] = useState('');
+  const [, setMessage] = useState('');
   const [posts, setPosts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,7 +27,6 @@ function MainPage() {
         const result = await response.json();
         if (result.user) {
           setPseudo(result.user.pseudo);
-          setUserId(result.user.id)
         } else {
           setMessage('User not found.');
         }
@@ -69,7 +68,7 @@ function MainPage() {
         body: JSON.stringify({
           title: title,
           content: content,
-          user_id: userId,
+          user_id: user_id,
         }),
       });
 
@@ -99,7 +98,11 @@ function MainPage() {
       </div>
       <div style={mainstyle.postsContainer}>
         {posts.map((post) => (
-          <div key={post.id} style={mainstyle.postBox} onClick={() => navigate(`/post/${post.post_id}`)}>
+          <div
+            key={post.id}
+            style={mainstyle.postBox}
+            onClick={() => navigate(`/post/${post.post_id}`, { state: { userId: user_id } })}
+          >
             <p style={mainstyle.postContent}>{post.user_id}</p>
             <h3 style={mainstyle.postTitle}>{post.title}</h3>
             <p style={mainstyle.postContent}>{post.content}</p>
