@@ -8,6 +8,7 @@ export function PostDetailPage() {
   const { post_id } = useParams();
   const location = useLocation();
   const user_id = location.state?.userId;
+  const pseudo = location.state?.pseudo;
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -131,7 +132,7 @@ export function PostDetailPage() {
             alt="User Avatar"
             style={postStyle.avatar}
           />
-          <span style={postStyle.username}>{"User"}</span>
+          <span style={postStyle.username}>{pseudo || "User"}</span>
         </div>
         <button style={postStyle.closeButton} onClick={() => navigate(-1)}>
           ✕

@@ -75,6 +75,8 @@ export const postStyle = {
       border: "1px solid #ddd",
       borderRadius: "5px",
       backgroundColor: "#f7f7f7",
+      resize: "none",
+      maxWidth: "500px",
     },
     addCommentButton: {
       padding: "10px 20px",
@@ -84,6 +86,7 @@ export const postStyle = {
       border: "none",
       borderRadius: "5px",
       cursor: "pointer",
+      display: "flex",
     },
   };
   
