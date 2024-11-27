@@ -18,7 +18,10 @@ export class CommentService {
   }
 
   async getComment(id: number): Promise<Comments> {
-    return this.commentRepository.findOneBy({ id });
+    return this.commentRepository.findOne({
+      where: { id },
+      relations: ['comments'],
+    });
   }
 
   async createComment(commentDto: CommentDto): Promise<Comments> {
