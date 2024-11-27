@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentModule } from './comments/comment.module';
 import { PostModule } from './post/post.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { PostModule } from './post/post.module';
       synchronize: true,
     }),
     PostModule,
+    CommentModule,
   ],
 })
 export class AppModule {}
