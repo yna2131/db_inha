@@ -15,7 +15,10 @@ export class PostService {
   }
 
   async getPost(post_id: number): Promise<Posts> {
-    return this.postRepository.findOneBy({ post_id });
+    return this.postRepository.findOne({
+      where: { post_id },
+      relations: ['comments'],
+    });
   }
 
   async createPost(postDto: Partial<Posts>): Promise<Posts> {
