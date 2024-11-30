@@ -1,4 +1,5 @@
 import { Comments } from 'src/comments/comment.entity';
+import { Tags } from 'src/tags/tag.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,6 +15,9 @@ export class Posts {
 
   @OneToMany(() => Comments, (comment) => comment.post)
   comments: Comments[];
+
+  @OneToMany(() => Tags, (tag) => tag.post)
+  tags: Tags[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
