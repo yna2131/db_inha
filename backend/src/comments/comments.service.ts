@@ -1,30 +1,39 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Posts } from 'src/post/post.entity';
+import { Post } from 'src/posts/post.entity';
 import { Repository } from 'typeorm';
-import { CommentDto, Comments } from './comment.entity';
+import { Comment, CommentDto } from './comments.entity';
 
 @Injectable()
-export class CommentService {
+export class CommentsService {
   constructor(
-    @InjectRepository(Comments)
-    private readonly commentRepository: Repository<Comments>,
-    @InjectRepository(Posts)
-    private readonly postRepository: Repository<Posts>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getAllComments(): Promise<Comments[]> {
+  async getAllComments(): Promise<Comment[]> {
     return this.commentRepository.find();
   }
 
-  async getComment(id: number): Promise<Comments> {
+  async getCommentById(id: number): Promise<Comment> {
     return this.commentRepository.findOne({
       where: { id },
       relations: ['comments'],
     });
   }
 
-  async createComment(commentDto: CommentDto): Promise<Comments> {
+  async createComment(
+    commentDto: CommentDto,
+    userId: number,
+  ): Promise<Comment> {
     const { post_id, comment_id, ...otherFields } = commentDto;
 
     if (!post_id && !comment_id) {
@@ -40,7 +49,10 @@ export class CommentService {
       );
     }
 
-    const newComment = this.commentRepository.create(otherFields);
+    const newComment = this.commentRepository.create({
+      ...otherFields,
+      user_id: userId,
+    });
 
     if (comment_id) {
       const parentComment = await this.commentRepository.findOne({
@@ -48,14 +60,16 @@ export class CommentService {
       });
       if (!parentComment) {
         throw new HttpException(
-          `Comment with id ${comment_id} does not exist.`,
+          `CommentDto with id ${comment_id} does not exist.`,
           HttpStatus.NOT_FOUND,
         );
       }
       newComment.parentComment = parentComment;
     } else {
       {
-        const post = await this.postRepository.findOne({ where: { post_id } });
+        const post = await this.postRepository.findOne({
+          where: { id: post_id },
+        });
         console.log(post);
         if (!post) {
           throw new HttpException(
@@ -72,12 +86,18 @@ export class CommentService {
   async updateComment(
     id: number,
     commentDto: Pick<CommentDto, 'content'>,
-  ): Promise<Comments> {
+  ): Promise<Comment> {
     await this.commentRepository.update(id, commentDto);
-    return this.getComment(id);
+    return this.getCommentById(id);
   }
 
-  async deleteComment(id: number): Promise<void> {
+  async deleteComment(id: number, userId: number): Promise<void> {
+    const comment = await this.getCommentById(id);
+    if (!comment) {
+      throw new BadRequestException(`Comment with id ${id} does not exist.`);
+    } else if (comment.user_id !== userId) {
+      throw new UnauthorizedException();
+    }
     await this.commentRepository.delete(id);
   }
 }

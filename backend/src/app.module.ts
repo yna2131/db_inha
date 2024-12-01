@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommentModule } from './comments/comment.module';
-import { PostModule } from './post/post.module';
+import { AuthModule } from './auth/auth.module';
+import { CommentModule } from './comments/comments.module';
+import { PostModule } from './posts/posts.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,9 +16,12 @@ import { PostModule } from './post/post.module';
       database: 'blog',
       autoLoadEntities: true,
       synchronize: true,
+      dropSchema: true,
     }),
     PostModule,
     CommentModule,
+    UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
