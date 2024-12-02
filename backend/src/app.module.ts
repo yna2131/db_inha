@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostModule } from './post/post.module';
+import { AuthModule } from './auth/auth.module';
+import { CommentModule } from './comments/comments.module';
+import { PostModule } from './posts/posts.module';
+import { TagModule } from './tags/tag.module';
 import { UsersModule } from './users/users.module';
-import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -17,8 +19,10 @@ import { CommentModule } from './comment/comment.module';
       synchronize: true,
     }),
     PostModule,
+    CommentModule,
     UsersModule,
-    CommentModule
+    AuthModule,
+    TagModule,
   ],
 })
 export class AppModule {}
