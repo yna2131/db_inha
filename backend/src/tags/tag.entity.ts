@@ -19,7 +19,6 @@ export class Tags {
 
     // Relation to Posts
     @ManyToMany(() => Posts, (post) => post.comments, {
-        nullable: true,
         onDelete: 'CASCADE',
     })
     @JoinColumn({ name: 'post_id' }) // This will add the foreign key column 'post_id'
