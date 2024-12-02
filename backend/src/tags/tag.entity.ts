@@ -1,37 +1,24 @@
-import { Posts } from 'src/post/post.entity';
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToMany,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Post } from 'src/posts/post.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Tags {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ length: 2000, default: 'No content written' })
-    name: string;
+  @Column({ length: 255, unique: true })
+  name: string;
 
-    // Relation to Posts
-    @ManyToMany(() => Posts, (post) => post.comments, {
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'post_id' }) // This will add the foreign key column 'post_id'
-    post: Posts;
+  @ManyToMany(() => Post, (post) => post.tags, {
+    onDelete: 'CASCADE',
+  })
+  posts: Post[];
 }
 
 export class TagDto {
-    @Column({ nullable: true })
-    post_id: number;
+  @Column({ nullable: true })
+  post_id: number;
 
-    @Column({ nullable: true })
-    tag_id: number;
-
-    @Column({ length: 2000 })
-    name: string;
+  @Column({ length: 255 })
+  name: string;
 }

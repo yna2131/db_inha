@@ -1,4 +1,5 @@
-import { Posts } from 'src/post/post.entity';
+import { Post } from 'src/posts/post.entity';
+import { User } from 'src/users/users.entity';
 import {
   Column,
   Entity,
@@ -9,31 +10,36 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Comments {
+export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ length: 2000, default: 'No content written' })
   content: string;
 
-  // Relation to Posts
-  @ManyToOne(() => Posts, (post) => post.comments, {
+  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @Column()
+  user_id: number;
+
+  @ManyToOne(() => Post, (post) => post.comments, {
     nullable: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'post_id' }) // This will add the foreign key column 'post_id'
-  post: Posts;
+  @JoinColumn({ name: 'post_id' })
+  post: Post;
 
-  // Self-referencing relationship
-  @ManyToOne(() => Comments, (comment) => comment.comments, {
+  @ManyToOne(() => Comment, (comment) => comment.comments, {
     nullable: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'comment_id' }) // This will add the foreign key column 'comment_id'
-  parentComment: Comments;
+  @JoinColumn({ name: 'comment_id' })
+  parentComment: Comment;
 
-  @OneToMany(() => Comments, (comment) => comment.parentComment)
-  comments: Comments[];
+  @OneToMany(() => Comment, (comment) => comment.parentComment)
+  comments: Comment[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
