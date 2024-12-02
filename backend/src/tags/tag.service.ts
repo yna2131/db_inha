@@ -41,7 +41,7 @@ export class TagService {
 
     async updateTag(
         id: number,
-        tagDto: Pick<TagDto, 'content'>,
+        tagDto: Pick<TagDto, 'name'>,
     ): Promise<Tags> {
         await this.tagRepository.update(id, tagDto);
         return this.getTag(id);

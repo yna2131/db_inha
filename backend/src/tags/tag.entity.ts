@@ -3,6 +3,7 @@ import {
     Column,
     Entity,
     JoinColumn,
+    ManyToMany,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
@@ -14,10 +15,10 @@ export class Tags {
     id: number;
 
     @Column({ length: 2000, default: 'No content written' })
-    content: string;
+    name: string;
 
     // Relation to Posts
-    @ManyToOne(() => Posts, (post) => post.comments, {
+    @ManyToMany(() => Posts, (post) => post.comments, {
         nullable: true,
         onDelete: 'CASCADE',
     })
@@ -33,5 +34,5 @@ export class TagDto {
     tag_id: number;
 
     @Column({ length: 2000 })
-    content: string;
+    name: string;
 }
