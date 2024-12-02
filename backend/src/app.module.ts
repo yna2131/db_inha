@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentModule } from './comments/comment.module';
 import { PostModule } from './post/post.module';
-
+import { TagModule } from './tags/tag.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -17,6 +17,7 @@ import { PostModule } from './post/post.module';
     }),
     PostModule,
     CommentModule,
+    TagModule,
   ],
 })
 export class AppModule {}
