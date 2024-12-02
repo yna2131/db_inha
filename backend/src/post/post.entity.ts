@@ -7,7 +7,7 @@ export class Posts {
   @PrimaryGeneratedColumn()
   post_id: number;
 
-  @Column({ length: 30 })
+  @Column({ length: 30, unique: true })
   title: string;
 
   @Column({ length: 2000, default: 'No content written' })
