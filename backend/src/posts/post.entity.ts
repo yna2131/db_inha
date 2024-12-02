@@ -1,9 +1,11 @@
 import { Comment } from 'src/comments/comments.entity';
+import { Tags } from 'src/tags/tag.entity';
 import { User } from 'src/users/users.entity';
 import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -26,6 +28,9 @@ export class Post {
 
   @Column()
   user_id: number;
+
+  @ManyToMany(() => Tags, (tag) => tag.posts)
+  tags: Tags[];
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];

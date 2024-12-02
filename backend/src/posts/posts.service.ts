@@ -29,7 +29,7 @@ export class PostsService {
   async getPostById(id: number): Promise<Post> {
     return this.postRepository.findOne({
       where: { id },
-      relations: ['user', 'comments'],
+      relations: ['user', 'tags', 'comments'],
       select: {
         user: {
           username: true,
