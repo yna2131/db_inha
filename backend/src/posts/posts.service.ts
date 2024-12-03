@@ -52,7 +52,9 @@ export class PostsService {
   }
 
   async deletePost(id: number, userId: number): Promise<void> {
-    const post = await this.getPostById(id);
+    console.log(id, userId);
+    const post = await this.postRepository.findOneBy({ id: id });
+    console.log(post);
     if (!post) {
       throw new BadRequestException(`Post with id ${id} does not exist.`);
     } else if (post.user_id !== userId) {

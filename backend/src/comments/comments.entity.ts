@@ -29,7 +29,7 @@ export class Comment {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'post_id' })
-  post: Post;
+  parentPost: Post;
 
   @ManyToOne(() => Comment, (comment) => comment.comments, {
     nullable: true,

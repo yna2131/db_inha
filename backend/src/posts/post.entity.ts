@@ -33,10 +33,10 @@ export class Post {
   @ManyToMany(() => Tags, (tag) => tag.posts)
   tags: Tags[];
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.parentPost)
   comments: Comment[];
 
-  @ManyToMany(() => Category, (category) => category.posts, {
+  @ManyToOne(() => Category, (category) => category.posts, {
     nullable: true,
     onDelete: 'SET NULL',
   })
