@@ -77,7 +77,7 @@ export class CommentsService {
             HttpStatus.NOT_FOUND,
           );
         }
-        newComment.post = post;
+        newComment.parentPost = post;
       }
     }
     return this.commentRepository.save(newComment);

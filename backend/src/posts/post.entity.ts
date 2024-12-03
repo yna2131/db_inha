@@ -1,3 +1,4 @@
+import { Category } from 'src/category/category.entity';
 import { Comment } from 'src/comments/comments.entity';
 import { Tags } from 'src/tags/tag.entity';
 import { User } from 'src/users/users.entity';
@@ -32,8 +33,15 @@ export class Post {
   @ManyToMany(() => Tags, (tag) => tag.posts)
   tags: Tags[];
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.parentPost)
   comments: Comment[];
+
+  @ManyToOne(() => Category, (category) => category.posts, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

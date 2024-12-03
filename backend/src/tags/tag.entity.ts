@@ -9,9 +9,7 @@ export class Tags {
   @Column({ length: 255, unique: true })
   name: string;
 
-  @ManyToMany(() => Post, (post) => post.tags, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToMany(() => Post, (post) => post.tags)
   posts: Post[];
 }
 
