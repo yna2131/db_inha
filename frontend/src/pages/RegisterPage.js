@@ -5,39 +5,41 @@ import { registerstyle } from "../styles/RegisterStyle";
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  const [pseudo, setPseudo] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage('Saving...');
+    setMessage("Saving...");
 
     if (password !== confirmPassword) {
-      setMessage('Passwords do not match!');
+      setMessage("Passwords do not match!");
       return;
     }
 
     try {
-      const response = await fetch('/auth/register', {
-        method: 'POST',
+      const response = await fetch("/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ pseudo, email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const result = await response.json();
       if (response.ok) {
-        setMessage('Account created successfully!');
-        navigate('/login');
+        setMessage("Account created successfully!");
+        window.localStorage.setItem("access_token", result.access_token);
+        console.log(result);
+        navigate("/main");
       } else {
-        setMessage(result.message || 'Error creating account.');
+        setMessage(result.message || "Error creating account.");
       }
     } catch (error) {
-      setMessage('Error communicating with the server.');
+      setMessage("Error communicating with the server.");
       console.error(error);
     }
   };
@@ -48,17 +50,19 @@ export function RegisterPage() {
         <p className="auth-title">Create An Account</p>
         <p className="auth-link">
           Already have an account?{" "}
-          <a href="/login" className="underline">Login</a>
+          <a href="/login" className="underline">
+            Login
+          </a>
         </p>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            id="pseudo-input"
+            id="username-input"
             className="auth-input"
-            placeholder="Enter your pseudo"
-            value={pseudo}
-            onChange={(e) => setPseudo(e.target.value)}
-            aria-label="Pseudo"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            aria-label="Username"
           />
           <input
             type="email"

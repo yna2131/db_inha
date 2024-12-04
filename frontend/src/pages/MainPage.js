@@ -1,66 +1,53 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { mainstyle } from "../styles/MainStyle";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CreatePostModal } from "../components/CreatePostModal";
+import { mainstyle } from "../styles/MainStyle";
 
 function MainPage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const email = location.state?.email;
-  const user_id = location.state?.userId;
-  const [pseudo, setPseudo] = useState("");
+  const [user, setUser] = useState({ id: "", email: "", username: "" });
   const [, setMessage] = useState("");
   const [posts, setPosts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`/users/username/${email}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  const fetchUser = async () => {
+    try {
+      const response = await fetch(`/users/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
 
-        const result = await response.json();
-        if (result.username) {
-          setPseudo(result.username);
-        } else {
-          setMessage("User not found.");
-        }
-      } catch (error) {
-        setMessage("Error communicating with the server.");
-        console.error(error);
-      }
-    };
-
-    if (email) {
-      fetchUser();
-    } else {
-      setMessage("Missing email.");
+      const result = await response.json();
+      setUser(result);
+    } catch (error) {
+      setMessage("Error communicating with the server.");
+      console.error(error);
     }
-  }, [email]);
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch("/posts", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+
+      const result = await response.json();
+      setPosts(result);
+    } catch (error) {
+      setMessage("Error fetching posts.");
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch("/posts", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`, 
-          },
-        });
-
-        const result = await response.json();
-        setPosts(result);
-      } catch (error) {
-        setMessage("Error fetching posts.");
-        console.error(error);
-      }
-    };
-
+    fetchUser();
     fetchPosts();
   }, []);
 
@@ -75,32 +62,37 @@ function MainPage() {
         body: JSON.stringify({
           title: title,
           content: content,
-          user_id: user_id,
         }),
       });
 
       const newPost = await response.json();
-      setPosts([newPost, ...posts]);
+      const updatedPosts = {
+        ...newPost,
+        user: { username: user.username },
+      };
+      setPosts([updatedPosts, ...posts]);
     } catch (error) {
       setMessage("Error creating post.");
       console.error(error);
     }
   };
 
-  if (!email) {
-    return <p>Error: Missing email.</p>;
-  }
-
   return (
     <div style={mainstyle.mainContainer}>
       <header style={mainstyle.header}>
         <p>
-          Welcome, <strong>{pseudo || "User"}</strong>!
+          Welcome<strong>{user.username ? `, ${user.username}` : ""}</strong>!
         </p>
       </header>
       <div style={mainstyle.categoriesContainer}>
-        {["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"].map((category, index) => (
-          <div key={index} style={mainstyle.categoryBox}>
+        {[
+          "Category 1",
+          "Category 2",
+          "Category 3",
+          "Category 4",
+          "Category 5",
+        ].map((category, index) => (
+          <div key={`category-${index}`} style={mainstyle.categoryBox}>
             {category}
           </div>
         ))}
@@ -109,13 +101,13 @@ function MainPage() {
         {posts.length === 0 ? (
           <p>No posts available.</p>
         ) : (
-          posts.map((post) => (
+          posts.map((post, index) => (
             <div
-              key={post.id}
+              key={`post-${post.id}`}
               style={mainstyle.postBox}
               onClick={() =>
                 navigate(`/post/${post.id}`, {
-                  state: { userId: user_id, pseudo: pseudo },
+                  state: { username: post.user.username },
                 })
               }
             >
@@ -150,7 +142,10 @@ function MainPage() {
       </button>
 
       {isModalOpen && (
-        <CreatePostModal onClose={() => setIsModalOpen(false)} onSubmit={createPost} />
+        <CreatePostModal
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={createPost}
+        />
       )}
     </div>
   );

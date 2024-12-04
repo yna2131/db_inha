@@ -1,60 +1,65 @@
-
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import './App.css';
-import main from './assets/Main.svg';
-import RegisterPage from './pages/RegisterPage';
-import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage';
-import PostDetailPage from './pages/PostDetailPage';
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
+import "./App.css";
+import main from "./assets/Main.svg";
+import LoginPage from "./pages/LoginPage";
+import MainPage from "./pages/MainPage";
+import PostDetailPage from "./pages/PostDetailPage";
+import PrivateRoutes from "./pages/PrivateRoutes";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    navigate('/register');
+    navigate("/register");
   };
   return (
     <div className="App">
       <header className="App-header">
         <div
           style={{
-            backgroundColor: '#1563B8',
-            width: '100vw',
-            height: '100vh',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
+            backgroundColor: "#1563B8",
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
           }}
         >
           <img
             src={main}
             alt="main"
             style={{
-              height: '30vh',
-              width: 'auto',
-              objectFit: 'contain',
-              marginBottom: '20px',
+              height: "30vh",
+              width: "auto",
+              objectFit: "contain",
+              marginBottom: "20px",
             }}
           />
           <form
             onSubmit={handleSubmit}
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
             <button
               type="submit"
               style={{
-                backgroundColor: '#1563B8',
-                color: 'white',
-                padding: '10px 20px',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
+                backgroundColor: "#1563B8",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
               }}
             >
               Welcome
@@ -71,10 +76,12 @@ function Main() {
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path='/post/:post_id' element={<PostDetailPage />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/post/:post_id" element={<PostDetailPage />} />
+        </Route>
       </Routes>
     </Router>
   );

@@ -5,32 +5,35 @@ import { registerstyle } from "../styles/RegisterStyle";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage('Logging in...');
+    setMessage("Logging in...");
 
     try {
-      const response = await fetch('/auth/login', {
-        method: 'POST',
+      const response = await fetch("/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       const result = await response.json();
       if (response.ok) {
-        setMessage('Login successful!');
-        navigate('/main', { state: { email, userId: result.userId, token: result.token } });
+        setMessage("Login successful!");
+        window.localStorage.setItem("access_token", result.access_token);
+        navigate("/main", {
+          state: { email, userId: result.userId, token: result.token },
+        });
       } else {
-        setMessage(result.message || 'Invalid email or password.');
+        setMessage(result.message || "Invalid email or password.");
       }
     } catch (error) {
-      setMessage('Error communicating with the server.');
+      setMessage("Error communicating with the server.");
       console.error(error);
     }
   };
@@ -41,7 +44,9 @@ export function LoginPage() {
         <p className="auth-title">Login into your Account</p>
         <p className="auth-link">
           You don't have an account?{" "}
-          <a href="/register" className="underline">Register</a>
+          <a href="/register" className="underline">
+            Register
+          </a>
         </p>
         <form onSubmit={handleSubmit}>
           <input

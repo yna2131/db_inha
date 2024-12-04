@@ -27,15 +27,25 @@ export class PostsService {
   }
 
   async getPostById(id: number): Promise<Post> {
-    return this.postRepository.findOne({
-      where: { id },
-      relations: ['user', 'tags', 'comments'],
-      select: {
-        user: {
-          username: true,
-        },
-      },
-    });
+    return await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'commentUser')
+      .select([
+        'post.id',
+        'post.title',
+        'post.content',
+        'post.created_at',
+        'user.username',
+        'comments.id',
+        'comments.content',
+        'comments.created_at',
+        'comments.updated_at',
+        'commentUser.username',
+      ])
+      .where('post.id = :id', { id })
+      .getOne();
   }
 
   async createPost(postDto: PostDto, userId: number): Promise<Post> {
