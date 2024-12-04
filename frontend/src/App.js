@@ -11,6 +11,7 @@ import MainPage from "./pages/MainPage";
 import PostDetailPage from "./pages/PostDetailPage";
 import PrivateRoutes from "./pages/PrivateRoutes";
 import RegisterPage from "./pages/RegisterPage";
+import CategoryPostsPage from "./pages/CategoryPostsPage";
 
 function App() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function App() {
     event.preventDefault();
     navigate("/register");
   };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -81,6 +83,10 @@ function Main() {
         <Route element={<PrivateRoutes />}>
           <Route path="/main" element={<MainPage />} />
           <Route path="/post/:post_id" element={<PostDetailPage />} />
+          <Route
+            path="/category/:category_id"
+            element={<CategoryPostsPage />}
+          />
         </Route>
       </Routes>
     </Router>
