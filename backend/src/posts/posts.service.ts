@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostDto } from './post.dto';
+import { PostDto, PostListDto } from './post.dto';
 import { Post } from './post.entity';
 
 @Injectable()
@@ -15,15 +15,28 @@ export class PostsService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getAllPosts(): Promise<Post[]> {
-    return this.postRepository.find({
-      relations: ['user'],
-      select: {
-        user: {
-          username: true,
-        },
+  async getAllPosts(): Promise<PostListDto[]> {
+    const rawPosts = await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .addSelect((subQuery) => {
+        return subQuery
+          .select('COUNT(comments.id)', 'commentCount')
+          .from('comments', 'comments')
+          .where('comments.post_id = post.id');
+      }, 'commentCount')
+      .getRawMany();
+
+    return rawPosts.map((post) => ({
+      id: post.post_id,
+      title: post.post_title,
+      content: post.post_content,
+      created_at: post.post_created_at,
+      user: {
+        username: post.user_username,
       },
-    });
+      commentCount: parseInt(post.commentCount, 10),
+    }));
   }
 
   async getPostById(id: number): Promise<Post> {
