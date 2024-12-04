@@ -1,23 +1,15 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { DateInput } from "../components/DateInput";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerstyle } from "../styles/RegisterStyle";
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    if (location.state?.email) {
-      setEmail(location.state.email);
-    }
-  }, [location.state?.email]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -29,33 +21,20 @@ export function RegisterPage() {
     }
 
     try {
-      const response = await fetch('/users/set-pseudo', {
+      const response = await fetch('/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, pseudo }),
+        body: JSON.stringify({ pseudo, email, password }),
       });
 
       const result = await response.json();
-      if (result.success) {
-        const passwordResponse = await fetch('/users/set-password', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const passwordResult = await passwordResponse.json();
-        if (passwordResult.success) {
-          setMessage('Account created successfully!');
-          navigate('/main', { state: { email, userId: result.userId } });
-        } else {
-          setMessage('Error saving password.');
-        }
+      if (response.ok) {
+        setMessage('Account created successfully!');
+        navigate('/login');
       } else {
-        setMessage('Error saving pseudo.');
+        setMessage(result.message || 'Error creating account.');
       }
     } catch (error) {
       setMessage('Error communicating with the server.');
@@ -81,11 +60,6 @@ export function RegisterPage() {
             onChange={(e) => setPseudo(e.target.value)}
             aria-label="Pseudo"
           />
-          <div className="birth-date-container">
-            <DateInput type="year" />
-            <DateInput type="month" />
-            <DateInput type="day" />
-          </div>
           <input
             type="email"
             id="email-input"

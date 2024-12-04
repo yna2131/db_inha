@@ -16,17 +16,16 @@ function MainPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("/users", {
-          method: "POST",
+        const response = await fetch(`/users/username/${email}`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email }),
         });
 
         const result = await response.json();
-        if (result.user) {
-          setPseudo(result.user.pseudo);
+        if (result.username) {
+          setPseudo(result.username);
         } else {
           setMessage("User not found.");
         }
@@ -46,7 +45,14 @@ function MainPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("/posts");
+        const response = await fetch("/posts", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`, 
+          },
+        });
+
         const result = await response.json();
         setPosts(result);
       } catch (error) {
@@ -64,6 +70,7 @@ function MainPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
         body: JSON.stringify({
           title: title,
@@ -92,34 +99,32 @@ function MainPage() {
         </p>
       </header>
       <div style={mainstyle.categoriesContainer}>
-        {[
-          "Category 1",
-          "Category 2",
-          "Category 3",
-          "Category 4",
-          "Category 5",
-        ].map((category, index) => (
+        {["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"].map((category, index) => (
           <div key={index} style={mainstyle.categoryBox}>
             {category}
           </div>
         ))}
       </div>
       <div style={mainstyle.postsContainer}>
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            style={mainstyle.postBox}
-            onClick={() =>
-              navigate(`/post/${post.post_id}`, {
-                state: { userId: user_id, pseudo: pseudo },
-              })
-            }
-          >
-            <p style={mainstyle.postContent}>{post.user_id}</p>
-            <h3 style={mainstyle.postTitle}>{post.title}</h3>
-            <p style={mainstyle.postContent}>{post.content}</p>
-          </div>
-        ))}
+        {posts.length === 0 ? (
+          <p>No posts available.</p>
+        ) : (
+          posts.map((post) => (
+            <div
+              key={post.id}
+              style={mainstyle.postBox}
+              onClick={() =>
+                navigate(`/post/${post.id}`, {
+                  state: { userId: user_id, pseudo: pseudo },
+                })
+              }
+            >
+              <p style={mainstyle.postContent}>{post.username}</p>
+              <h3 style={mainstyle.postTitle}>{post.title}</h3>
+              <p style={mainstyle.postContent}>{post.content}</p>
+            </div>
+          ))
+        )}
       </div>
 
       <button
@@ -145,10 +150,7 @@ function MainPage() {
       </button>
 
       {isModalOpen && (
-        <CreatePostModal
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={createPost}
-        />
+        <CreatePostModal onClose={() => setIsModalOpen(false)} onSubmit={createPost} />
       )}
     </div>
   );
