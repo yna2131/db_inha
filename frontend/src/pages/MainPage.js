@@ -8,9 +8,9 @@ function MainPage() {
   const [user, setUser] = useState({ id: "", email: "", username: "" });
   const [, setMessage] = useState("");
   const [posts, setPosts] = useState([]);
-  const [categories, setCategories] = useState([]); // State for categories
+  const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("post"); // Add modalType to differentiate between post and category
+  const [modalType, setModalType] = useState("post");
 
   const fetchUser = async () => {
     try {
@@ -73,8 +73,13 @@ function MainPage() {
   }, []);
 
   const createPost = async (data) => {
-    const { field1: title, field2: content } = data; // Adjust to handle modal data structure
+    const { field1: title, field2: content, category } = data;
     try {
+      if (!category) {
+        setMessage("Please select a category.");
+        return;
+      }
+
       const response = await fetch("/posts", {
         method: "POST",
         headers: {
@@ -82,12 +87,18 @@ function MainPage() {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
         body: JSON.stringify({
-          title: title,
-          content: content,
+          title,
+          content,
+          categoryId: category,
         }),
       });
 
       const newPost = await response.json();
+      if (!newPost.id) {
+        setMessage("Error creating post.");
+        return;
+      }
+
       const updatedPosts = {
         ...newPost,
         user: { username: user.username },
@@ -100,7 +111,7 @@ function MainPage() {
   };
 
   const createCategory = async (data) => {
-    const { field1: name, field2: description } = data; // Adjust to handle modal data structure
+    const { field1: name, field2: description } = data;
     try {
       const response = await fetch("/categories", {
         method: "POST",
@@ -137,7 +148,7 @@ function MainPage() {
             <div
               key={`category-${index}`}
               style={mainstyle.categoryBox}
-              onClick={() => navigate(`/category/${category.id}`)} // Redirect to CategoryPostsPage
+              onClick={() => navigate(`/category/${category.id}`)}
             >
               <h4>{category.name}</h4>
             </div>
@@ -168,7 +179,7 @@ function MainPage() {
 
       <button
         onClick={() => {
-          setModalType("post"); // Set modal type to 'post' for creating posts
+          setModalType("post");
           setIsModalOpen(true);
         }}
         style={{
@@ -193,7 +204,7 @@ function MainPage() {
 
       <button
         onClick={() => {
-          setModalType("category"); // Set modal type to 'category' for creating categories
+          setModalType("category");
           setIsModalOpen(true);
         }}
         style={{
@@ -218,9 +229,10 @@ function MainPage() {
 
       {isModalOpen && (
         <CreateModal
-          type={modalType} // Pass the type ('post' or 'category') to the modal
+          type={modalType}
           onClose={() => setIsModalOpen(false)}
           onSubmit={modalType === "post" ? createPost : createCategory}
+          categories={categories}
         />
       )}
     </div>

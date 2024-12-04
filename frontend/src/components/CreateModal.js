@@ -1,12 +1,17 @@
 import { useState } from "react";
 
-export function CreateModal({ type, onClose, onSubmit }) {
+export function CreateModal({ type, onClose, onSubmit, categories }) {
   const [field1, setField1] = useState("");
   const [field2, setField2] = useState("");
+  const [category, setCategory] = useState("");
 
   const handleSubmit = () => {
-    if (field1 && field2) {
-      onSubmit({ field1, field2 });
+    if (field1 && field2 && (type === "category" || category)) {
+      onSubmit({
+        field1,
+        field2,
+        category: type === "post" ? category : undefined,
+      });
       onClose();
     }
   };
@@ -14,8 +19,12 @@ export function CreateModal({ type, onClose, onSubmit }) {
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
-        <button onClick={onClose} style={styles.closeButton}>X</button>
-        <h2>{type === "post" ? "Create a New Post" : "Create a New Category"}</h2>
+        <button onClick={onClose} style={styles.closeButton}>
+          X
+        </button>
+        <h2>
+          {type === "post" ? "Create a New Post" : "Create a New Category"}
+        </h2>
         <div>
           <input
             type="text"
@@ -33,6 +42,22 @@ export function CreateModal({ type, onClose, onSubmit }) {
             style={styles.textarea}
           />
         </div>
+        {type === "post" && (
+          <div>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              style={styles.select}
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <button onClick={handleSubmit} style={styles.submitButton}>
           {type === "post" ? "Create Post" : "Create Category"}
         </button>
@@ -83,6 +108,13 @@ const styles = {
     width: "100%",
     margin: "10px 0",
     height: "200px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+  },
+  select: {
+    width: "100%",
+    margin: "10px 0",
+    height: "40px",
     borderRadius: "4px",
     border: "1px solid #ccc",
   },
