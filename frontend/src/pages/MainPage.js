@@ -7,7 +7,7 @@ function MainPage() {
   const navigate = useNavigate();
   const [user, setUser] = useState({ id: "", email: "", username: "" });
   const [, setMessage] = useState("");
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]); 
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("post");
@@ -26,7 +26,7 @@ function MainPage() {
       setUser(result);
     } catch (error) {
       setMessage("Error communicating with the server.");
-      console.error(error);
+      console.error("Fetch User Error:", error);
     }
   };
 
@@ -41,10 +41,16 @@ function MainPage() {
       });
 
       const result = await response.json();
-      setPosts(result);
+      if (Array.isArray(result)) {
+        setPosts(result);
+      } else {
+        console.error("Unexpected response for posts:", result);
+        setPosts([]); 
+      }
     } catch (error) {
       setMessage("Error fetching posts.");
-      console.error(error);
+      console.error("Fetch Posts Error:", error);
+      setPosts([]); 
     }
   };
 
@@ -59,10 +65,16 @@ function MainPage() {
       });
 
       const result = await response.json();
-      setCategories(result);
+      if (Array.isArray(result)) {
+        setCategories(result);
+      } else {
+        console.error("Unexpected response for categories:", result);
+        setCategories([]); 
+      }
     } catch (error) {
       setMessage("Error fetching categories.");
-      console.error(error);
+      console.error("Fetch Categories Error:", error);
+      setCategories([]); 
     }
   };
 
@@ -87,8 +99,8 @@ function MainPage() {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
         body: JSON.stringify({
-          title,
-          content,
+          title: title,
+          content: content,
           categoryId: category,
         }),
       });
@@ -106,7 +118,7 @@ function MainPage() {
       setPosts([updatedPosts, ...posts]);
     } catch (error) {
       setMessage("Error creating post.");
-      console.error(error);
+      console.error("Create Post Error:", error);
     }
   };
 
@@ -129,7 +141,7 @@ function MainPage() {
       setCategories([...categories, newCategory]);
     } catch (error) {
       setMessage("Error creating category.");
-      console.error(error);
+      console.error("Create Category Error:", error);
     }
   };
 
@@ -169,7 +181,7 @@ function MainPage() {
                 })
               }
             >
-              <p style={mainstyle.postContent}>{post.username}</p>
+              <p style={mainstyle.postContent}>{post.user.username}</p>
               <h3 style={mainstyle.postTitle}>{post.title}</h3>
               <p style={mainstyle.postContent}>{post.content}</p>
             </div>
@@ -184,7 +196,7 @@ function MainPage() {
         }}
         style={{
           position: "fixed",
-          bottom: "80px",
+          bottom: "90px",
           right: "20px",
           width: "60px",
           height: "60px",
@@ -214,7 +226,7 @@ function MainPage() {
           width: "60px",
           height: "60px",
           borderRadius: "50%",
-          backgroundColor: "#D84A4A",
+          backgroundColor: "#1563B8",
           color: "white",
           fontSize: "20px",
           border: "none",
