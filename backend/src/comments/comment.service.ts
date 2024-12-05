@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from 'src/posts/posts.entity';
+import { Post } from 'src/posts/post.entity';
 import { Repository } from 'typeorm';
 import { CommentDto, Comments } from './comment.entity';
 

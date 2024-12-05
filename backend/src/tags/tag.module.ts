@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from 'src/posts/posts.module';
-import { Post } from 'src/posts/posts.entity';
+import { Post } from 'src/posts/post.entity';
 import { TagController } from './tag.controller';
 import { Tags } from './tag.entity';
 import { TagService } from './tag.service';
