@@ -26,9 +26,7 @@ export function LoginPage() {
       if (response.ok) {
         setMessage("Login successful!");
         window.localStorage.setItem("access_token", result.access_token);
-        navigate("/main", {
-          state: { username, userId: result.userId, token: result.token },
-        });
+        navigate("/main");
       } else {
         setMessage(result.message || "Invalid email or password.");
       }

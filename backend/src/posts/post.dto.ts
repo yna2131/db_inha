@@ -1,16 +1,15 @@
-import { Optional } from '@nestjs/common';
-import { Column } from 'typeorm';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PostDto {
-  @Column({ length: 30 })
+  @IsString()
   title: string;
 
-  @Column({ length: 2000 })
+  @IsString()
   content: string;
 
-  @Column()
-  @Optional()
-  category_id: number;
+  @IsOptional()
+  @IsNumber({}, { message: 'category_id must be a valid number' })
+  category_id?: number;
 }
 
 export class PostListDto {

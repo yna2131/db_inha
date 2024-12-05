@@ -56,6 +56,7 @@ export class PostsService {
         'post.title',
         'post.content',
         'post.created_at',
+        'post.updated_at',
         'user.username',
         'comments.id',
         'comments.content',
@@ -68,10 +69,12 @@ export class PostsService {
   }
 
   async createPost(postDto: PostDto, userId: number): Promise<Post> {
+    console.log('Received postDto:', postDto);
     const newPost = this.postRepository.create({
       ...postDto,
       user_id: userId,
     });
+    console.log('Created post:', newPost);
     return this.postRepository.save(newPost);
   }
 

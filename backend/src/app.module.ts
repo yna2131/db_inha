@@ -18,6 +18,7 @@ import { UsersModule } from './users/users.module';
       database: 'blog',
       autoLoadEntities: true,
       synchronize: true,
+      dropSchema: true,
     }),
     PostModule,
     CommentModule,

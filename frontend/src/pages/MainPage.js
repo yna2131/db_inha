@@ -103,7 +103,7 @@ function MainPage() {
         body: JSON.stringify({
           title: title,
           content: content,
-          category_id: category,
+          category_id: category.length > 0 ? category : null,
         }),
       });
 

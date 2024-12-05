@@ -213,13 +213,11 @@ export function PostDetailPage() {
         </p>
         <p>{post.content}</p>
         <p>
-          <em>Created on: {new Date(post.created_at).toLocaleString()}</em>
+          <em>Created at: {new Date(post.created_at).toLocaleString()}</em>
         </p>
-        {post.updated_at && (
+        {post.created_at !== post.updated_at && (
           <p>
-            <em>
-              Last updated on: {new Date(post.updated_at).toLocaleString()}
-            </em>
+            <em>Modified at: {new Date(post.updated_at).toLocaleString()}</em>
           </p>
         )}
         <div
