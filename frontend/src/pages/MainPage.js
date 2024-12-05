@@ -187,9 +187,15 @@ function MainPage() {
                 })
               }
             >
-              <p style={mainstyle.postContent}>{post.user.username}</p>
+              <p style={mainstyle.postContent}>
+                <strong>{post.user.username}</strong>
+              </p>
               <h3 style={mainstyle.postTitle}>{post.title}</h3>
               <p style={mainstyle.postContent}>{post.content}</p>
+              <p style={mainstyle.commentCount}>
+                {post.commentCount}{" "}
+                {post.commentCount === 1 ? "Comment" : "Comments"}
+              </p>
             </div>
           ))
         )}
