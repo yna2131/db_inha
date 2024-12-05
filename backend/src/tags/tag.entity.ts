@@ -17,12 +17,8 @@ export class Tags {
     @Column({ length: 2000, default: 'No content written' })
     name: string;
 
-    // Relation to Posts
-    @ManyToMany(() => Posts, (post) => post.comments, {
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'post_id' }) // This will add the foreign key column 'post_id'
-    post: Posts;
+    @ManyToMany(() => Posts, (post) => post.tags)
+    post: Posts[];
 }
 
 export class TagDto {
