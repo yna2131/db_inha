@@ -1,4 +1,4 @@
-import { Posts } from 'src/post/post.entity';
+import { Post } from 'src/posts/post.entity';
 import {
   Column,
   Entity,
@@ -17,12 +17,12 @@ export class Comments {
   content: string;
 
   // Relation to Posts
-  @ManyToOne(() => Posts, (post) => post.comments, {
+  @ManyToOne(() => Post, (post) => post.comments, {
     nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'post_id' }) // This will add the foreign key column 'post_id'
-  post: Posts;
+  post: Post;
 
   // Self-referencing relationship
   @ManyToOne(() => Comments, (comment) => comment.comments, {

@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Posts } from './post.entity';
+import { Post } from './post.entity';
 import { Tags } from 'src/tags/tag.entity';
 
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(Posts)
-    private readonly postRepository: Repository<Posts>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
     @InjectRepository(Tags)
     private readonly tagRepository: Repository<Tags>,
-  ) {}
+  ) { }
   private extractHashtags(content: string): string[] {
     const regex = /#\w+/g;
     return content.match(regex) || [];
   }
 
-  private async processTags(post: Posts, hashtags: string[]): Promise<void> {
+  private async processTags(post: Post, hashtags: string[]): Promise<void> {
     const tags = await Promise.all(
       hashtags.map(async (hashtag) => {
         let tag = await this.tagRepository.findOne({ where: { name: hashtag } });
@@ -31,20 +31,20 @@ export class PostService {
     post.tags = tags;
     await this.postRepository.save(post);
   }
-  async getAllPosts(): Promise<Posts[]> {
+  async getAllPosts(): Promise<Post[]> {
     return this.postRepository.find({
       relations: ['comments', 'tags'],
     });
   }
 
-  async getPost(post_id: number): Promise<Posts> {
+  async getPost(post_id: number): Promise<Post> {
     return this.postRepository.findOne({
       where: { post_id },
-      relations: ['comments','tags'],
+      relations: ['comments', 'tags'],
     });
   }
 
-  async createPost(postDto: Partial<Posts>): Promise<Posts> {
+  async createPost(postDto: Partial<Post>): Promise<Post> {
     const newPost = this.postRepository.create(postDto);
     const savedPost = await this.postRepository.save(newPost);
     const hashtags = this.extractHashtags(savedPost.content);
@@ -52,7 +52,7 @@ export class PostService {
     return savedPost;
   }
 
-  async updatePost(post_id: number, postDto: Partial<Posts>): Promise<Posts> {
+  async updatePost(post_id: number, postDto: Partial<Post>): Promise<Post> {
     // Fetch the existing post
     const post = await this.getPost(post_id);
     if (!post) {

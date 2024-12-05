@@ -1,4 +1,4 @@
-import { Posts } from 'src/post/post.entity';
+import { Post } from 'src/posts/post.entity';
 import {
     Column,
     Entity,
@@ -17,8 +17,8 @@ export class Tags {
     @Column({ length: 2000, default: 'No content written' })
     name: string;
 
-    @ManyToMany(() => Posts, (post) => post.tags)
-    post: Posts[];
+    @ManyToMany(() => Post, (post) => post.tags)
+    post: Post[];
 }
 
 export class TagDto {

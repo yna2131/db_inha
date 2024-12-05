@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Posts } from 'src/post/post.entity';
+import { Post } from 'src/posts/post.entity';
 import { Repository } from 'typeorm';
 import { CommentDto, Comments } from './comment.entity';
 
@@ -9,9 +9,9 @@ export class CommentService {
   constructor(
     @InjectRepository(Comments)
     private readonly commentRepository: Repository<Comments>,
-    @InjectRepository(Posts)
-    private readonly postRepository: Repository<Posts>,
-  ) {}
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+  ) { }
 
   async getAllComments(): Promise<Comments[]> {
     return this.commentRepository.find();

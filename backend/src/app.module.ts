@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentModule } from './comments/comment.module';
-import { PostModule } from './post/post.module';
+import { PostModule } from './posts/post.module';
 import { TagModule } from './tags/tag.module';
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import { TagModule } from './tags/tag.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'sarr43210',
+      password: '',
       database: 'blog',
       autoLoadEntities: true,
       synchronize: true,
@@ -20,4 +20,4 @@ import { TagModule } from './tags/tag.module';
     TagModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

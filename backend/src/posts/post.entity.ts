@@ -3,7 +3,7 @@ import { Tags } from 'src/tags/tag.entity';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Posts {
+export class Post {
   @PrimaryGeneratedColumn()
   post_id: number;
 

@@ -1,16 +1,17 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  HttpStatus,
+  Param,
   Post,
   Put,
-  Delete,
-  Param,
-  Body,
+  Request,
   Res,
-  HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { Posts } from './post.entity';
 
 @Controller('posts')
 export class PostController {
@@ -29,24 +30,24 @@ export class PostController {
   }
 
   @Post()
-  async createPost(@Body() postDto: Partial<Posts>, @Res() res) {
-    const post = await this.postService.createPost(postDto);
+  async createPost(@Request() req, @Body() postDto: PostDto, @Res() res) {
+    const post = await this.postService.createPost(postDto, req.user.sub);
     return res.status(HttpStatus.CREATED).json(post);
   }
 
-  @Put(':post_id')
+  @Put(':id')
   async updatePost(
-    @Param('post_id') post_id: number,
-    @Body() postDto: Partial<Posts>,
+    @Param('id') id: number,
+    @Body() postDto: PostDto,
     @Res() res,
   ) {
-    const post = await this.postService.updatePost(post_id, postDto);
+    const post = await this.postService.updatePost(id, postDto);
     return res.status(HttpStatus.OK).json(post);
   }
 
-  @Delete(':post_id')
-  async deletePost(@Param('post_id') post_id: number, @Res() res) {
-    await this.postService.deletePost(post_id);
+  @Delete(':id')
+  async deletePost(@Request() req, @Param('id') id: number, @Res() res) {
+    await this.postService.deletePost(id, req.user.sub);
     return res.status(HttpStatus.NO_CONTENT).send();
   }
 }
