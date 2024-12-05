@@ -12,6 +12,7 @@ import PostDetailPage from "./pages/PostDetailPage";
 import PrivateRoutes from "./pages/PrivateRoutes";
 import RegisterPage from "./pages/RegisterPage";
 import CategoryPostsPage from "./pages/CategoryPostsPage";
+import TagsPostsPage from "./pages/TagsPostsPage";
 
 function App() {
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ function Main() {
             path="/category/:category_id"
             element={<CategoryPostsPage />}
           />
+          <Route path="/tags/:tag_id" element={<TagsPostsPage />} />
         </Route>
       </Routes>
     </Router>

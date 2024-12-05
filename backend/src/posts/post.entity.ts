@@ -1,4 +1,3 @@
-
 import { Comment } from 'src/comments/comments.entity';
 import { Tags } from 'src/tags/tag.entity';
 import { Category } from 'src/category/category.entity';
@@ -26,7 +25,6 @@ export class Post {
 
   @Column({ length: 2000, default: 'No content written' })
   content: string;
-
 
   @ManyToMany(() => Tags, (tag) => tag.post, { cascade: true })
   @JoinTable()

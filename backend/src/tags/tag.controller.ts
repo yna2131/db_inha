@@ -16,23 +16,24 @@ import { TagService } from './tag.service';
 export class TagController {
   constructor(private readonly tagService: TagService) {}
   @Get()
-  async getAllComments(@Res() res) {
+  async getAllTags(@Res() res) {
     const tags = await this.tagService.getAllTags();
     return res.status(HttpStatus.OK).json(tags);
   }
 
   @Get(':id')
-  async getComment(@Param('id') id: number, @Res() res) {
+  async getTag(@Param('id') id: number, @Res() res) {
     const comment = await this.tagService.getTag(id);
     return res.status(HttpStatus.OK).json(comment);
   }
+
   @Post()
-  async createComment(@Body() tagDto: TagDto) {
+  async createTag(@Body() tagDto: TagDto) {
     return await this.tagService.createTag(tagDto);
   }
 
   @Put(':id')
-  async updateComment(
+  async updateTag(
     @Param('id') id: number,
     @Body() tagtDto: Omit<TagDto, 'tag_id'>,
     @Res() res,
