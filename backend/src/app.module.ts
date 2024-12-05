@@ -10,7 +10,7 @@ import { TagModule } from './tags/tag.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'sarr43210',
       database: 'blog',
       autoLoadEntities: true,
       synchronize: true,
