@@ -11,12 +11,14 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { PostService } from './posts.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { PostDto } from './post.dto';
+import { PostService } from './posts.service';
 
+@UseGuards(AuthGuard)
 @Controller('posts')
 export class PostController {
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   @Get()
   async getAllPosts(@Res() res) {
@@ -26,7 +28,12 @@ export class PostController {
 
   @Get('category/:category_id')
   async getPostsByCategory(@Param('category_id') categoryId: number) {
-    return await this.postService.getAllPosts(categoryId);
+    return await this.postService.getAllPosts({ categoryId });
+  }
+
+  @Get('tags/:tag_id')
+  async getPostsByTag(@Param('tag_id') tagId: number) {
+    return await this.postService.getAllPosts({ tagId });
   }
   @Get(':post_id')
   async getPost(@Param('post_id') post_id: number, @Res() res) {

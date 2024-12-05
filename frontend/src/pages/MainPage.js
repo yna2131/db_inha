@@ -11,6 +11,31 @@ function MainPage() {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("post");
+  const [tags, setTags] = useState([]);
+
+  const fetchTags = async () => {
+    try {
+      const response = await fetch("/tags", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+
+      const result = await response.json();
+      if (Array.isArray(result)) {
+        setTags(result);
+      } else {
+        console.error("Unexpected response for categories:", result);
+        setTags([]);
+      }
+    } catch (error) {
+      setMessage("Error fetching categories.");
+      console.error("Fetch Categories Error:", error);
+      setTags([]);
+    }
+  };
 
   const fetchUser = async () => {
     try {
@@ -84,6 +109,10 @@ function MainPage() {
     fetchPosts();
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    fetchTags();
+  }, [posts]);
 
   const createPost = async (data) => {
     console.log(data);
@@ -173,6 +202,25 @@ function MainPage() {
           ))
         )}
       </div>
+      <div style={mainstyle.tagsContainer}>
+        {tags.length === 0 ? (
+          <p>No tags available.</p>
+        ) : (
+          tags.map((category, index) => (
+            <div
+              key={`category-${index}`}
+              style={mainstyle.categoryBoxBlue}
+              onClick={() =>
+                navigate(`/tags/${category.id}`, {
+                  state: { category: category, username: user.username },
+                })
+              }
+            >
+              <h4>{category.name}</h4>
+            </div>
+          ))
+        )}
+      </div>
       <div style={mainstyle.postsContainer}>
         {posts.length === 0 ? (
           <p>No posts available.</p>
@@ -221,6 +269,7 @@ function MainPage() {
           justifyContent: "center",
           alignItems: "center",
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+          cursor: "pointer",
         }}
       >
         +
@@ -246,6 +295,7 @@ function MainPage() {
           justifyContent: "center",
           alignItems: "center",
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+          cursor: "pointer",
         }}
       >
         C

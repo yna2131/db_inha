@@ -11,7 +11,7 @@ export class TagService {
     private readonly tagRepository: Repository<Tags>,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) { }
+  ) {}
 
   async getAllTags(): Promise<Tags[]> {
     return this.tagRepository.find();
@@ -35,7 +35,9 @@ export class TagService {
       );
     }
 
-    let tag = await this.tagRepository.findOne({ where: { name: otherFields.name } });
+    let tag = await this.tagRepository.findOne({
+      where: { name: otherFields.name },
+    });
     if (!tag) {
       tag = this.tagRepository.create({ ...otherFields });
       tag = await this.tagRepository.save(tag);
