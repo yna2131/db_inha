@@ -43,6 +43,9 @@ export class Post {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
+  @Column({ nullable: true })
+  category_id: number;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 

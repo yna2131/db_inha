@@ -15,17 +15,23 @@ export class PostsService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getAllPosts(): Promise<PostListDto[]> {
-    const rawPosts = await this.postRepository
+  async getAllPosts(categoryId?: number): Promise<PostListDto[]> {
+    const queryBuilder = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
+      .leftJoin('post.category', 'category')
       .addSelect((subQuery) => {
         return subQuery
           .select('COUNT(comments.id)', 'commentCount')
           .from('comments', 'comments')
           .where('comments.post_id = post.id');
-      }, 'commentCount')
-      .getRawMany();
+      }, 'commentCount');
+
+    if (categoryId) {
+      queryBuilder.where('category.id = :categoryId', { categoryId });
+    }
+
+    const rawPosts = await queryBuilder.getRawMany();
 
     return rawPosts.map((post) => ({
       id: post.post_id,

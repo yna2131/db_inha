@@ -5,7 +5,7 @@ import { registerstyle } from "../styles/RegisterStyle";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
@@ -19,7 +19,7 @@ export function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const result = await response.json();
@@ -27,7 +27,7 @@ export function LoginPage() {
         setMessage("Login successful!");
         window.localStorage.setItem("access_token", result.access_token);
         navigate("/main", {
-          state: { email, userId: result.userId, token: result.token },
+          state: { username, userId: result.userId, token: result.token },
         });
       } else {
         setMessage(result.message || "Invalid email or password.");
@@ -50,13 +50,13 @@ export function LoginPage() {
         </p>
         <form onSubmit={handleSubmit}>
           <input
-            type="email"
-            id="email-input"
+            type="text"
+            id="username-input"
             className="auth-input"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-label="Email"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            aria-label="Username"
           />
           <input
             type="password"

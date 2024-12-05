@@ -2,8 +2,8 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import main from "../assets/Main.svg";
-import { postStyle } from "../styles/PostStyle";
 import EditPostModal from "../components/EditPostModal";
+import { postStyle } from "../styles/PostStyle";
 
 export function PostDetailPage() {
   const { post_id } = useParams();
@@ -176,31 +176,35 @@ export function PostDetailPage() {
         </button>
       </header>
 
-      <button
-        onClick={() => setIsEditModalOpen(true)}
-        style={{
-          ...postStyle.addCommentButton,
-          position: "absolute",
-          top: "105px",
-          right: "150px",
-        }}
-      >
-        Edit Post
-      </button>
+      {post.user.username === location.state.username ? (
+        <>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            style={{
+              ...postStyle.addCommentButton,
+              position: "absolute",
+              top: "105px",
+              right: "150px",
+            }}
+          >
+            Edit Post
+          </button>
 
-      <button
-        onClick={() => setIsDeleteModalOpen(true)}
-        style={{
-          ...postStyle.addCommentButton,
-          position: "absolute",
-          top: "105px",
-          right: "10px",
-          backgroundColor: "#D9534F",
-          marginRight: "20px",
-        }}
-      >
-        Delete Post
-      </button>
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            style={{
+              ...postStyle.addCommentButton,
+              position: "absolute",
+              top: "105px",
+              right: "10px",
+              backgroundColor: "#D9534F",
+              marginRight: "20px",
+            }}
+          >
+            Delete Post
+          </button>
+        </>
+      ) : null}
 
       <main style={postStyle.postContent}>
         <h2 style={postStyle.postTitle}>{post.title}</h2>

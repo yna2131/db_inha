@@ -7,7 +7,7 @@ function MainPage() {
   const navigate = useNavigate();
   const [user, setUser] = useState({ id: "", email: "", username: "" });
   const [, setMessage] = useState("");
-  const [posts, setPosts] = useState([]); 
+  const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("post");
@@ -24,6 +24,7 @@ function MainPage() {
 
       const result = await response.json();
       setUser(result);
+      console.log("result", result);
     } catch (error) {
       setMessage("Error communicating with the server.");
       console.error("Fetch User Error:", error);
@@ -45,12 +46,12 @@ function MainPage() {
         setPosts(result);
       } else {
         console.error("Unexpected response for posts:", result);
-        setPosts([]); 
+        setPosts([]);
       }
     } catch (error) {
       setMessage("Error fetching posts.");
       console.error("Fetch Posts Error:", error);
-      setPosts([]); 
+      setPosts([]);
     }
   };
 
@@ -69,12 +70,12 @@ function MainPage() {
         setCategories(result);
       } else {
         console.error("Unexpected response for categories:", result);
-        setCategories([]); 
+        setCategories([]);
       }
     } catch (error) {
       setMessage("Error fetching categories.");
       console.error("Fetch Categories Error:", error);
-      setCategories([]); 
+      setCategories([]);
     }
   };
 
@@ -85,12 +86,13 @@ function MainPage() {
   }, []);
 
   const createPost = async (data) => {
+    console.log(data);
     const { field1: title, field2: content, category } = data;
     try {
-      if (!category) {
-        setMessage("Please select a category.");
-        return;
-      }
+      // if (!category) {
+      //   setMessage("Please select a category.");
+      //   return;
+      // }
 
       const response = await fetch("/posts", {
         method: "POST",
@@ -101,7 +103,7 @@ function MainPage() {
         body: JSON.stringify({
           title: title,
           content: content,
-          categoryId: category,
+          category_id: category,
         }),
       });
 
@@ -111,11 +113,11 @@ function MainPage() {
         return;
       }
 
-      const updatedPosts = {
+      const updatedPost = {
         ...newPost,
         user: { username: user.username },
       };
-      setPosts([updatedPosts, ...posts]);
+      setPosts([updatedPost, ...posts]);
     } catch (error) {
       setMessage("Error creating post.");
       console.error("Create Post Error:", error);
@@ -160,7 +162,11 @@ function MainPage() {
             <div
               key={`category-${index}`}
               style={mainstyle.categoryBox}
-              onClick={() => navigate(`/category/${category.id}`)}
+              onClick={() =>
+                navigate(`/category/${category.id}`, {
+                  state: { category: category, username: user.username },
+                })
+              }
             >
               <h4>{category.name}</h4>
             </div>
@@ -177,7 +183,7 @@ function MainPage() {
               style={mainstyle.postBox}
               onClick={() =>
                 navigate(`/post/${post.id}`, {
-                  state: { username: post.user.username },
+                  state: { username: user.username },
                 })
               }
             >

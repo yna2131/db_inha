@@ -6,7 +6,7 @@ export function CreateModal({ type, onClose, onSubmit, categories }) {
   const [category, setCategory] = useState("");
 
   const handleSubmit = () => {
-    if (field1 && field2 && (type === "category" || category)) {
+    if (field1 && field2) {
       onSubmit({
         field1,
         field2,

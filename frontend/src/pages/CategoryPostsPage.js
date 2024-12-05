@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { mainstyle } from "../styles/MainStyle";
 
 function CategoryPostsPage() {
   const { category_id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
-  const [category, setCategory] = useState({});
 
   useEffect(() => {
     const fetchPostsByCategory = async () => {
+      console.log(location.state.category);
       try {
-        const response = await fetch(`/categories/${category_id}/posts`, {
+        const response = await fetch(`/posts/category/${category_id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -21,22 +22,23 @@ function CategoryPostsPage() {
 
         const result = await response.json();
 
-        setPosts(result.posts || []);
-        setCategory(result.category || {});
+        setPosts(result || []);
       } catch (error) {
         console.error("Error fetching posts by category:", error);
       }
     };
 
     fetchPostsByCategory();
-  }, [category_id]);
+  }, [category_id, location.state.category]);
 
   return (
     <div style={mainstyle.mainContainer}>
       <header style={mainstyle.header}>
         <div style={mainstyle.headerContent}>
           <span>
-            {category.name ? `Posts in ${category.name}` : "Category Posts"}
+            {location.state.category.name
+              ? `Posts in ${location.state.category.name}`
+              : "Category Posts"}
           </span>
           <button style={mainstyle.closeButton} onClick={() => navigate(-1)}>
             ✕
@@ -44,9 +46,9 @@ function CategoryPostsPage() {
         </div>
       </header>
 
-      {category.description && (
+      {location.state.category.description && (
         <section style={mainstyle.categoryDescription}>
-          <p>{category.description}</p>
+          <p>{location.state.category.description}</p>
         </section>
       )}
 
@@ -58,7 +60,11 @@ function CategoryPostsPage() {
             <div
               key={post.id}
               style={mainstyle.postBox}
-              onClick={() => navigate(`/post/${post.id}`)}
+              onClick={() =>
+                navigate(`/post/${post.id}`, {
+                  state: { username: location.state.username },
+                })
+              }
             >
               <h3 style={mainstyle.postTitle}>{post.title}</h3>
               <p style={mainstyle.postContent}>{post.content}</p>
