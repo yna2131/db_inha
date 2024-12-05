@@ -50,6 +50,15 @@ export class UsersController {
     return user;
   }
 
+  @Get('/email/:email')
+  async getUserByEmail(@Param('email') email: string): Promise<User | string> {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      return 'User not found';
+    }
+    return user;
+  }
+
   @Post('/change-username')
   async updateUsername(@Body() body: { email: string; pseudo: string }) {
     const user = await this.usersService.updateUsername(
