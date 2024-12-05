@@ -1,6 +1,6 @@
 import { Comments } from 'src/comments/comment.entity';
 import { Tags } from 'src/tags/tag.entity';
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Posts {
@@ -16,7 +16,8 @@ export class Posts {
   @OneToMany(() => Comments, (comment) => comment.post)
   comments: Comments[];
 
-  @ManyToMany(() => Tags, (tag) => tag.post)
+  @ManyToMany(() => Tags, (tag) => tag.post, { cascade: true })
+  @JoinTable()
   tags: Tags[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
