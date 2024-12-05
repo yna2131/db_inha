@@ -1,4 +1,6 @@
+import { Column } from 'typeorm';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Tags } from 'src/tags/tag.entity';
 
 export class PostDto {
   @IsString()
@@ -10,6 +12,10 @@ export class PostDto {
   @IsOptional()
   @IsNumber({}, { message: 'category_id must be a valid number' })
   category_id?: number;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'category_id must be a valid number' })
+  tags?: Tags[];
 }
 
 export class PostListDto {
@@ -18,12 +24,4 @@ export class PostListDto {
   title: string;
 
   content: string;
-
-  created_at: Date;
-
-  user: {
-    username: string;
-  };
-
-  commentCount: number;
 }

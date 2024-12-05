@@ -1,12 +1,14 @@
-import { Category } from 'src/category/category.entity';
+
 import { Comment } from 'src/comments/comments.entity';
 import { Tags } from 'src/tags/tag.entity';
+import { Category } from 'src/category/category.entity';
 import { User } from 'src/users/users.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -25,15 +27,17 @@ export class Post {
   @Column({ length: 2000, default: 'No content written' })
   content: string;
 
+
+  @ManyToMany(() => Tags, (tag) => tag.post, { cascade: true })
+  @JoinTable()
+  tags: Tags[];
+
   @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column()
   user_id: number;
-
-  @ManyToMany(() => Tags, (tag) => tag.posts)
-  tags: Tags[];
 
   @OneToMany(() => Comment, (comment) => comment.parentPost)
   comments: Comment[];

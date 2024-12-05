@@ -1,5 +1,13 @@
 import { Post } from 'src/posts/post.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Tags {
@@ -9,13 +17,13 @@ export class Tags {
   @Column({ length: 255, unique: true })
   name: string;
 
-  @ManyToMany(() => Post, (post) => post.tags)
-  posts: Post[];
+    @ManyToMany(() => Post, (post) => post.tags)
+    post: Post[];
 }
 
 export class TagDto {
   @Column({ nullable: true })
-  post_id: number;
+  id: number;
 
   @Column({ length: 255 })
   name: string;

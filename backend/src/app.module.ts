@@ -27,4 +27,4 @@ import { UsersModule } from './users/users.module';
     TagModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
