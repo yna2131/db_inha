@@ -25,12 +25,12 @@ export class TagService {
   }
 
   async createTag(tagDto: TagDto): Promise<Tags> {
-    const { post_id, ...otherFields } = tagDto;
+    const { id, ...otherFields } = tagDto;
 
-    const post = await this.postRepository.findOne({ where: { post_id } });
+    const post = await this.postRepository.findOne({ where: { id } });
     if (!post) {
       throw new HttpException(
-        `Post with id ${post_id} does not exist.`,
+        `Post with id ${id} does not exist.`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -43,7 +43,7 @@ export class TagService {
 
     if (!tag.post) {
       tag.post = [post]; // Initialize as an array if not already set
-    } else if (!tag.post.some((p) => p.post_id === post.post_id)) {
+    } else if (!tag.post.some((p) => p.id === post.id)) {
       tag.post.push(post); // Add the post if not already linked
     }
 
@@ -87,7 +87,7 @@ export class TagService {
 
     if (!tag.post) {
       tag.post = [post];
-    } else if (!tag.post.some((p) => p.post_id === post.post_id)) {
+    } else if (!tag.post.some((p) => p.id === post.id)) {
       tag.post.push(post);
     }
 
@@ -101,7 +101,7 @@ export class TagService {
     });
 
     if (tag && tag.post) {
-      tag.post = tag.post.filter((p) => p.post_id !== post.post_id);
+      tag.post = tag.post.filter((p) => p.id !== post.id);
       await this.tagRepository.save(tag);
     }
   }

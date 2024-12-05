@@ -12,6 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from './posts.service';
+import { PostDto } from './post.dto';
 
 @Controller('posts')
 export class PostController {
@@ -25,7 +26,7 @@ export class PostController {
 
   @Get(':post_id')
   async getPost(@Param('post_id') post_id: number, @Res() res) {
-    const post = await this.postService.getPost(post_id);
+    const post = await this.postService.getPostById(post_id);
     return res.status(HttpStatus.OK).json(post);
   }
 

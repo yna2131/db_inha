@@ -16,4 +16,4 @@ import { TagService } from './tag.service';
   exports: [TypeOrmModule, TagService], // Export TypeOrmModule so other modules can use TagsRepository
   controllers: [TagController],
 })
-export class TagModule { }
+export class TagModule {}

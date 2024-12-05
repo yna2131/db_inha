@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './post.entity';
 import { Tags } from 'src/tags/tag.entity';
-
+import { PostDto } from './post.dto';
 @Injectable()
 export class PostService {
   constructor(
@@ -33,28 +37,41 @@ export class PostService {
   }
   async getAllPosts(): Promise<Post[]> {
     return this.postRepository.find({
-      relations: ['comments', 'tags'],
+      relations: ['user','comments', 'tags'],
+        select: {
+            user: {
+                username: true,
+            },
+        },
     });
   }
 
-  async getPost(post_id: number): Promise<Post> {
-    return this.postRepository.findOne({
-      where: { post_id },
-      relations: ['comments', 'tags'],
-    });
+    async getPostById(id: number): Promise<Post> {
+        return this.postRepository.findOne({
+            where: { id },
+            relations: ['user', 'tags', 'comments'],
+            select: {
+                user: {
+                    username: true,
+                },
+            },
+        });
+    }
+
+  async createPost(postDto: PostDto, userId: number): Promise<Post> {
+        const newPost = this.postRepository.create({
+            ...postDto,
+            user_id: userId,
+        });
+        const savedPost = await this.postRepository.save(newPost);
+        const hashtags = this.extractHashtags(savedPost.content);
+        await this.processTags(savedPost, hashtags);
+        return savedPost;
   }
 
-  async createPost(postDto: Partial<Post>): Promise<Post> {
-    const newPost = this.postRepository.create(postDto);
-    const savedPost = await this.postRepository.save(newPost);
-    const hashtags = this.extractHashtags(savedPost.content);
-    await this.processTags(savedPost, hashtags);
-    return savedPost;
-  }
-
-  async updatePost(post_id: number, postDto: Partial<Post>): Promise<Post> {
+    async updatePost(id: number, postDto: PostDto): Promise<Post> {
     // Fetch the existing post
-    const post = await this.getPost(post_id);
+      const post = await this.getPostById(id);
     if (!post) {
       throw new Error('Post not found');
     }
@@ -66,10 +83,10 @@ export class PostService {
     const isContentChanged = postDto.content && postDto.content !== post.content;
 
     // Update the post in the repository
-    await this.postRepository.update(post_id, postDto);
+    await this.postRepository.update(id, postDto);
 
     // Fetch the updated post with current tag relationships
-    const updatedPost = await this.getPost(post_id);
+    const updatedPost = await this.getPostById(id);
 
     // Extract hashtags from the updated content if content changed
     const newHashtags = isContentChanged
@@ -144,7 +161,16 @@ export class PostService {
 
     return updatedPost;
   }
-  async deletePost(post_id: number): Promise<void> {
-    await this.postRepository.delete(post_id);
-  }
+    async deletePost(id: number, userId: number): Promise<void> {
+        console.log(id, userId);
+        const post = await this.postRepository.findOneBy({ id: id });
+        console.log(post);
+        if (!post) {
+            throw new BadRequestException(`Post with id ${id} does not exist.`);
+        } else if (post.user_id !== userId) {
+            throw new UnauthorizedException();
+        }
+        await this.postRepository.delete(id);
+    }
+
 }

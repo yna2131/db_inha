@@ -11,23 +11,20 @@ import {
 
 @Entity()
 export class Tags {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ length: 2000, default: 'No content written' })
-    name: string;
+  @Column({ length: 255, unique: true })
+  name: string;
 
     @ManyToMany(() => Post, (post) => post.tags)
     post: Post[];
 }
 
 export class TagDto {
-    @Column({ nullable: true })
-    post_id: number;
+  @Column({ nullable: true })
+  id: number;
 
-    @Column({ nullable: true })
-    tag_id: number;
-
-    @Column({ length: 2000 })
-    name: string;
+  @Column({ length: 255 })
+  name: string;
 }
