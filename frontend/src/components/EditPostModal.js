@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export function EditPostModal({ post, categories, onClose, onSave }) {
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.content);
-  const [category, setCategory] = useState(post.category?.id || ""); 
+  const [category, setCategory] = useState(post.category?.id || "");
 
   const handleSave = () => {
     if (!title.trim() || !content.trim()) {
@@ -14,7 +14,7 @@ export function EditPostModal({ post, categories, onClose, onSave }) {
     onSave({
       title,
       content,
-      category: category || null, // Pass null if no category is selected
+      category_id: parseInt(category, 10) || null, // Pass null if no category is selected
     });
   };
 

@@ -87,7 +87,7 @@ function MainPage() {
 
   const createPost = async (data) => {
     console.log(data);
-    const { field1: title, field2: content, category } = data;
+    const { field1: title, field2: content, category_id } = data;
     try {
       // if (!category) {
       //   setMessage("Please select a category.");
@@ -103,7 +103,7 @@ function MainPage() {
         body: JSON.stringify({
           title: title,
           content: content,
-          category_id: category.length > 0 ? category : null,
+          category_id: category_id,
         }),
       });
 

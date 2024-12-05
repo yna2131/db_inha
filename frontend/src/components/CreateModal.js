@@ -10,7 +10,7 @@ export function CreateModal({ type, onClose, onSubmit, categories }) {
       onSubmit({
         field1,
         field2,
-        category: type === "post" ? category : undefined,
+        category_id: type === "post" ? parseInt(category) : null,
       });
       onClose();
     }

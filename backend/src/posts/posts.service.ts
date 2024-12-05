@@ -50,6 +50,7 @@ export class PostsService {
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('post.category', 'category')
       .leftJoinAndSelect('comments.user', 'commentUser')
       .select([
         'post.id',
@@ -58,6 +59,7 @@ export class PostsService {
         'post.created_at',
         'post.updated_at',
         'user.username',
+        'category',
         'comments.id',
         'comments.content',
         'comments.created_at',
