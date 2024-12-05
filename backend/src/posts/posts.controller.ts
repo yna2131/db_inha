@@ -26,6 +26,11 @@ export class PostsController {
     return res.status(HttpStatus.OK).json(posts);
   }
 
+  @Get('category/:category_id')
+  async getPostsByCategory(@Param('category_id') categoryId: number) {
+    return await this.postService.getAllPosts(categoryId);
+  }
+
   @Get(':id')
   async getPost(@Param('id') id: number, @Res() res) {
     const post = await this.postService.getPostById(id);

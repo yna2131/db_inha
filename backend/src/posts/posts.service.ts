@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostDto } from './post.dto';
+import { PostDto, PostListDto } from './post.dto';
 import { Post } from './post.entity';
 
 @Injectable()
@@ -15,34 +15,68 @@ export class PostsService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getAllPosts(): Promise<Post[]> {
-    return this.postRepository.find({
-      relations: ['user'],
-      select: {
-        user: {
-          username: true,
-        },
+  async getAllPosts(categoryId?: number): Promise<PostListDto[]> {
+    const queryBuilder = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoin('post.category', 'category')
+      .addSelect((subQuery) => {
+        return subQuery
+          .select('COUNT(comments.id)', 'commentCount')
+          .from('comments', 'comments')
+          .where('comments.post_id = post.id');
+      }, 'commentCount');
+
+    if (categoryId) {
+      queryBuilder.where('category.id = :categoryId', { categoryId });
+    }
+
+    const rawPosts = await queryBuilder.getRawMany();
+
+    return rawPosts.map((post) => ({
+      id: post.post_id,
+      title: post.post_title,
+      content: post.post_content,
+      created_at: post.post_created_at,
+      user: {
+        username: post.user_username,
       },
-    });
+      commentCount: parseInt(post.commentCount, 10),
+    }));
   }
 
   async getPostById(id: number): Promise<Post> {
-    return this.postRepository.findOne({
-      where: { id },
-      relations: ['user', 'tags', 'comments'],
-      select: {
-        user: {
-          username: true,
-        },
-      },
-    });
+    return await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('post.category', 'category')
+      .leftJoinAndSelect('comments.user', 'commentUser')
+      .select([
+        'post.id',
+        'post.title',
+        'post.content',
+        'post.created_at',
+        'post.updated_at',
+        'user.username',
+        'category',
+        'comments.id',
+        'comments.content',
+        'comments.created_at',
+        'comments.updated_at',
+        'commentUser.username',
+      ])
+      .where('post.id = :id', { id })
+      .getOne();
   }
 
   async createPost(postDto: PostDto, userId: number): Promise<Post> {
+    console.log('Received postDto:', postDto);
     const newPost = this.postRepository.create({
       ...postDto,
       user_id: userId,
     });
+    console.log('Created post:', newPost);
     return this.postRepository.save(newPost);
   }
 

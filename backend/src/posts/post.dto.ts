@@ -1,9 +1,29 @@
-import { Column } from 'typeorm';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PostDto {
-  @Column({ length: 30 })
+  @IsString()
   title: string;
 
-  @Column({ length: 2000 })
+  @IsString()
   content: string;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'category_id must be a valid number' })
+  category_id?: number;
+}
+
+export class PostListDto {
+  id: number;
+
+  title: string;
+
+  content: string;
+
+  created_at: Date;
+
+  user: {
+    username: string;
+  };
+
+  commentCount: number;
 }

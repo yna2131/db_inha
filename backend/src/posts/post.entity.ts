@@ -4,12 +4,14 @@ import { Tags } from 'src/tags/tag.entity';
 import { User } from 'src/users/users.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -43,9 +45,12 @@ export class Post {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ nullable: true })
+  category_id: number;
+
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 }
